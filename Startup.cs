@@ -34,7 +34,10 @@ namespace AspNetCoreSignalR
                 });
             services.AddMvc(option => option.EnableEndpointRouting = false);
             services.AddRazorPages();
-            services.AddSignalR();
+            services.AddSignalR().AddRedis(options =>
+            {
+                options.Configuration.ClientName = "SignalR";
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -48,6 +51,9 @@ namespace AspNetCoreSignalR
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             // app.UseSignalR(config => {
             //     config.MapHub<MessageHub>("/messages");
