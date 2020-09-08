@@ -40,10 +40,21 @@ document.getElementById("sendButton").addEventListener("click", function(event) 
         connection.invoke(method, message).catch(function (err) {
             return console.error(err.toString());
         });
+    } else if (groupValue === "PrivateGroup") {
+        connection.invoke("SendMessageToGroup", groupValue, message).catch(function (err) {
+            return console.error(err.toString());
+        });
     } else {
         connection.invoke("SendMessageToUser", groupValue, message).catch(function (err) {
             return console.error(err.toString());
         });
     }
+    event.preventDefault();
+});
+
+document.getElementById("joinGroup").addEventListener("click", function(event) {
+    connection.invoke("JoinGroup", "PrivateGroup").catch(function (err) {
+        return console.error(err.toString());
+    });
     event.preventDefault();
 });
