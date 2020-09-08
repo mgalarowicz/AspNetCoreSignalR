@@ -4,6 +4,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 
 namespace AspNetCoreSignalR.Controllers {
+    
+    //If SignalR transport is using WebSockets or ServerSentEvents and I'm using bearer tokens then is additional configuration required.
+    //None of this applies when we are using cookie authentication
+
     public class AnnouncementController : Controller {
         private readonly IHubContext<MessageHub> _hubContext;
         public AnnouncementController (IHubContext<MessageHub> hubContext) {
