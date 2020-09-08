@@ -9,6 +9,23 @@ connection.on("ReceiveMessage", function(message) {
     document.getElementById("messages").appendChild(div);
 });
 
+connection.on("UserConnected", function(connectionId) {
+    var groupElement = document.getElementById("group");
+    var option = document.createElement("option");
+    option.text = connectionId;
+    option.value = connectionId;
+    groupElement.add(option);
+});
+
+connection.on("UserDisconnected", function(connectionId) {
+    var groupElement = document.getElementById("group");
+    for (var i = 0; i < groupElement.length; i++){
+        if (groupElement.options[i].value == connectionId) {
+            groupElement.remove(i);
+        }
+    }
+});
+
 connection.start().catch(function(err) {
     return console.error(err.toString());
 });
@@ -17,12 +34,16 @@ document.getElementById("sendButton").addEventListener("click", function(event) 
     var message = document.getElementById("message").value;
     var groupElement = document.getElementById("group");
     var groupValue = groupElement.options[groupElement.selectedIndex].value;
-    var method = "SendMessageToAll";
-    if (groupValue === "Myself") {
-        method = "SendMessageToCaller";
+
+    if (groupValue === "Myself" || groupValue === "All") {
+        var method = groupValue === "All" ? "SendMessageToAll" : "SendMessageToCaller";
+        connection.invoke(method, message).catch(function (err) {
+            return console.error(err.toString());
+        });
+    } else {
+        connection.invoke("SendMessageToUser", groupValue, message).catch(function (err) {
+            return console.error(err.toString());
+        });
     }
-    connection.invoke(method, message).catch(function (err) {
-        return console.error(err.toString());
-    });
     event.preventDefault();
 });
